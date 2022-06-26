@@ -22,13 +22,13 @@ def create_dataframe(dataset):
 
     for sample in dataset:
 
-        id = sample.id
-
         try: uniqueness = sample.uniqueness
         except: uniqueness = 0
 
         for detection in sample.ground_truth.detections:
 
+            id = detection.id
+            
             try: label = detection.label
             except: label = ''
 

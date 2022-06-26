@@ -75,12 +75,11 @@ def update_figure(uniqueness_slider_range, sqrt_area_slider_range):
 )
 def update(name, input_value):
     if input_value is None: return f'No sample selected.'
-    ids = set()
+    ids = []
     points = input_value['points']
     for point in points:
         id = point['customdata'][0]
-        ids.add(id)
-    ids = list(ids)
+        ids.append(id)
     requests.post(
         url = f'{config.url}:{config.port["flask"]}/fiftyone/update',
         json = {
@@ -88,7 +87,7 @@ def update(name, input_value):
             'ids' : ids
         }
     )
-    return f'Number of images: {len(ids)}'
+    return f'Number of patches: {len(ids)}'
     
 dash.register_page(__name__, path_template="/embedding/<name>")
 

@@ -35,13 +35,11 @@ def fiftyone_load():
 
     global dataset, session
     dataset = fo.load_dataset(name)
-    stage = fo.Select('')
-    stage.sample_ids.clear()
-    for id in ids: stage.sample_ids.append(id)
-    view = dataset.add_stage(stage)
+    stage = fo.Select(ids)
+    view = dataset.to_patches('ground_truth').add_stage(stage)
     session.view = view
     
-    print(f'Updated view of dataset {name} to {len(ids)} samples.')
+    print(f'Updated view of dataset {name} to {len(ids)} patches.')
     return '', 204
 
 if __name__ == '__main__':
