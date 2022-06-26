@@ -47,3 +47,4 @@ def fiftyone_load():
 if __name__ == '__main__':
     session = fo.launch_app(dataset, address=config.address, port=config.port['fiftyone'], remote=True)
     app.run(host=config.host, port=config.port['flask'])
+    # app.run(host='0.0.0.0', port='6000')

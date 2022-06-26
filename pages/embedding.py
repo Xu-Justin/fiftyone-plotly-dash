@@ -74,23 +74,22 @@ def update_figure(uniqueness_slider_range, sqrt_area_slider_range):
     dash.Input(component_id='graph', component_property='selectedData')
 )
 def update(name, input_value):
-    print(name, input_value)
-    if input_value is not None:
-        ids = set()
-        points = input_value['points']
-        for point in points:
-            id = point['customdata'][0]
-            ids.add(id)
-        ids = list(ids)
-        requests.post(
-            url = f'{config.url}:{config.port["flask"]}/fiftyone/update',
-            json = {
-                'name' : name,
-                'ids' : ids
-            }
-        )
-    return f'Callback: {input_value}'
-
+    if input_value is None: return f'No sample selected.'
+    ids = set()
+    points = input_value['points']
+    for point in points:
+        id = point['customdata'][0]
+        ids.add(id)
+    ids = list(ids)
+    requests.post(
+        url = f'{config.url}:{config.port["flask"]}/fiftyone/update',
+        json = {
+            'name' : name,
+            'ids' : ids
+        }
+    )
+    return f'Number of images: {len(ids)}'
+    
 dash.register_page(__name__, path_template="/embedding/<name>")
 
 def layout(name=None):
