@@ -1,3 +1,5 @@
+import os
+
 port = {
     'flask' : 6001,
     'fiftyone' : 6002,
@@ -7,3 +9,6 @@ port = {
 host = address = ip = '0.0.0.0'
 
 url = 'http://192.168.103.67'
+
+cache_folder = '.cache'
+os.makedirs(cache_folder, exist_ok=True)

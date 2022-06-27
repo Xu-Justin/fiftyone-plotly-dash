@@ -25,6 +25,8 @@ cd fiftyone-plotly-dash
 |:----------:|-----------------------------------|--------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 |   `POST`   | `localhost:6001/compute`          | <pre>'name' :str</pre>                                             | Compute image embeddings of `<name>` and saved the result to `<name>.pickle`. <br> <br> This API is automatically called when `GET localhost:6001/embedding/<name>` couldn't find `<name>.pickle`.      |
 |   `POST`   | `localhost:6001/fiftyone/update`  | <pre>'name' :str<br>'ids'  :list</pre>                             | Update fiftyone view of <name> to only contains <ids> images.                                                                                                                                           |
+|   `POST`   | `localhost:6001/delete/cache`     | -                                                                  | Delete all cache.                                                                                                                                                                                       |
+
 
 ## Docker
 

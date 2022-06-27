@@ -21,7 +21,7 @@ df = None
 
 def main(name):
 
-    file_path = f'{name}.pickle'
+    file_path = f'{config.cache_folder}/{name}.pickle'
     if not os.path.exists(file_path): requests.post(url=f'{config.url}:{config.port["flask"]}/compute', json={'name':name})
 
     global df

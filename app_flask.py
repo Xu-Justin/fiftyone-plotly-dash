@@ -1,6 +1,7 @@
 import fiftyone as fo
 from flask import Flask, render_template, request, redirect, url_for
 import config, utils
+import os, shutil
 
 app = Flask(__name__)
 dataset = fo.Dataset()
@@ -18,10 +19,10 @@ def preview_embedding(name):
 def compute():
     data = request.get_json()
     name = data['name']
-
+    
     dataset =  fo.load_dataset(name)
     df = utils.create_dataframe(dataset)
-    save_path = f'{name}.pickle'
+    save_path = f'{config.cache_folder}/{name}.pickle'
     df.to_pickle(save_path)
 
     print(f'Saved computation to {save_path}')
@@ -42,7 +43,13 @@ def fiftyone_load():
     print(f'Updated view of dataset {name} to {len(ids)} patches.')
     return '', 204
 
+@app.route('/delete/cache', methods=['POST'])
+def delete_cache():
+    shutil.rmtree(f'{config.cache_folder}')
+    os.makedirs(f'{config.cache_folder}')
+    print(f'Deleted cache folder.')
+    return '', 204
+
 if __name__ == '__main__':
     session = fo.launch_app(dataset, address=config.address, port=config.port['fiftyone'], remote=True)
     app.run(host=config.host, port=config.port['flask'])
-    # app.run(host='0.0.0.0', port='6000')
