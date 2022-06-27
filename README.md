@@ -18,14 +18,14 @@ cd fiftyone-plotly-dash
 
 |   Method   |               Route               |                                                                                            Description                                                                                            |
 |:----------:|-----------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-|   `GET`    | `localhost:6001/embedding/<name>` | Display image embeddings plot of `<name>`.                                                                                                                                                        |
-|   `GET`    | `localhost:6001/fiftyone/<name>`  | Display selected image embeddings scatter of `<name>` on fiftyone interface.                            
+|   `GET`    | `url:6001/embedding/<name>`       | Display image embeddings plot of `<name>`. <br> <br> This API will automatically send `POST` `url:6001/compute`, if `<name>.pickle` is not found on cache folder.                                 |                   
+|   `GET`    | `url:6001/fiftyone/<name>`        | Display selected image embeddings scatter of `<name>` on fiftyone interface.                            
 
 |   Method   |               Route               |                                JSON                                |                                                                                               Description                                                                                               |
 |:----------:|-----------------------------------|--------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-|   `POST`   | `localhost:6001/compute`          | <pre>'name' :str</pre>                                             | Compute image embeddings of `<name>` and saved the result to `<name>.pickle`. <br> <br> This API is automatically called when `GET localhost:6001/embedding/<name>` couldn't find `<name>.pickle`.      |
-|   `POST`   | `localhost:6001/fiftyone/update`  | <pre>'name' :str<br>'ids'  :list</pre>                             | Update fiftyone view of <name> to only contains <ids> images.                                                                                                                                           |
-|   `POST`   | `localhost:6001/delete/cache`     | -                                                                  | Delete all cache.                                                                                                                                                                                       |
+|   `POST`   | `url:6001/compute`                | <pre>'name' :str</pre>                                             | Compute image embeddings of `<name>` and saved the result to `<name>.pickle` on cache folder.                                                                                                           |
+|   `POST`   | `url:6001/fiftyone/update`        | <pre>'name' :str<br>'ids'  :list</pre>                             | Update fiftyone view of <name> to only contains <ids> images.                                                                                                                                           |
+|   `POST`   | `url:6001/delete/cache`           | -                                                                  | Delete all cache.                                                                                                                                                                                       |
 
 
 ## Docker
