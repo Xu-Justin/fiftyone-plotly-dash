@@ -67,5 +67,5 @@ def delete_cache():
 
 if __name__ == '__main__':
     session = fo.launch_app(dataset, address=config.address, port=config.port['fiftyone'], remote=True)
-    auto_fiftyone_save_session_view(2)
+    auto_fiftyone_save_session_view(config.auto_save_interval)
     app.run(host=config.host, port=config.port['flask'])
