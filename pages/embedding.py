@@ -57,11 +57,21 @@ def main(name):
                 style={'width' : '100%', 'height': '60%'}
             ),
             dbc.Container(
+                dbc.Button("Select All", color="primary", className="me-3", id='select-all'),
+                className = 'd-flex justify-content-end'
+            ),
+            dbc.Container(
                 children = [
-                    dash.html.P(f'{name}', id='name'),
+                    dash.html.Pre('Dataset Name: '),
+                    dash.html.Pre(f'{name}', id='name'),
+                ],
+                className = 'd-flex justify-content-start mx-3'
+            ),
+            dbc.Container(
+                children = [
                     dash.html.P(id='num_sample'),
                 ],
-                className = 'm-3'
+                className = 'mx-3 mb-3'
             ),
             dbc.Container(
                 children = [
@@ -87,36 +97,54 @@ def main(name):
                 ],
                 className = 'm-3'
             ),
-            dbc.Button('Open Fiftyone', color='light', className='m-3', href=f'{config.url}:{config.port["flask"]}/fiftyone/{name}', external_link=True, target='_blank'),
+            dbc.Button("Open Fiftyone", outline=True, color="secondary", className="m-3", href=f'{config.url}:{config.port["flask"]}/fiftyone/{name}', external_link=True, target='_blank'),
+            dash.html.P(id='dummy-1'),
+            dash.html.P(id='dummy-2'),
         ],
         className = 'p-5 vh-100 vw-100'
     )
 
 @dash.callback(
     dash.Output(component_id='graph', component_property='figure'), 
+    dash.Input(component_id='select-all', component_property='n_clicks'),
     dash.Input(component_id='uniqueness-slider', component_property='value'),
     dash.Input(component_id='sqrt-area-slider', component_property='value'),
 )
-def update_figure(uniqueness_slider_range, sqrt_area_slider_range):
-    global_uniqueness_range = uniqueness_slider_range
-    global_sqrt_area_range = sqrt_area_slider_range
-    figure = create_figure(df, global_uniqueness_range[0], global_uniqueness_range[1], global_sqrt_area_range[0], global_sqrt_area_range[1])
-    print(f'Updated uniquesness range to {global_uniqueness_range}')
-    print(f'Updated sqrt area range to {global_sqrt_area_range}')
+def callback_select_all(n_clicks, uniqueness_range, sqrt_area_range):
+    figure = create_figure(df, uniqueness_range[0], uniqueness_range[1], sqrt_area_range[0], sqrt_area_range[1])
+    print(f'Updated uniquesness range to {uniqueness_range}')
+    print(f'Updated sqrt area range to {sqrt_area_range}')
     return figure
 
 @dash.callback(
     dash.Output(component_id='num_sample', component_property='children'),
     dash.Input(component_id='name', component_property='children'),
-    dash.Input(component_id='graph', component_property='selectedData')
+    dash.Input(component_id='graph', component_property='selectedData'),
+    dash.Input(component_id='graph', component_property='figure'),
 )
-def update(name, input_value):
-    if input_value is None: return f'No sample selected.'
+def callback_graph(name, selected_data, figure):
+    message_no_sample = f'No sample selected.'
     ids = []
-    points = input_value['points']
-    for point in points:
-        id = point['customdata'][0]
-        ids.append(id)
+
+    if not isinstance(dash.ctx.triggered_prop_ids, dash._utils.AttributeDict): return message_no_sample
+
+    if 'graph.selectedData' in dash.ctx.triggered_prop_ids:
+        for point in selected_data['points']:
+            id = point['customdata'][0]
+            ids.append(id)
+    elif 'graph.figure' in dash.ctx.triggered_prop_ids:
+        for data in figure['data']:
+            for custom_data in data['customdata']:
+                id = custom_data[0]
+                ids.append(id)
+    else: return message_no_sample
+
+    if len(ids):
+        fiftyone_update(name, ids)
+        return f'Number of patches: {len(ids)}'
+    else: return message_no_sample
+
+def fiftyone_update(name, ids):
     requests.post(
         url = f'{config.url}:{config.port["flask"]}/fiftyone/update',
         json = {
@@ -124,7 +152,7 @@ def update(name, input_value):
             'ids' : ids
         }
     )
-    return f'Number of patches: {len(ids)}'
+    print(f'Updated fiftyone dataset {name} to {len(ids)} patches')
 
 dash.register_page(__name__, path_template="/embedding/<name>")
 
