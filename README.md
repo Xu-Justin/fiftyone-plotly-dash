@@ -2,6 +2,8 @@
 
 This repository integrates [fiftyone image embeddings](https://voxel51.com/docs/fiftyone/tutorials/image_embeddings.html) to web browser using [plotly-dash](https://plotly.com/dash/), so that user no longer need to use jupyter notebook or jupyter lab to preview and interact with image embeddings plot.
 
+<img src="resources/demo.gif"/>
+
 ## Usage
 
 The program `app_flask.py` responsible to serve fiftyone application, while the program `app_dash.py` responsible to serve plotly plot on dash server. Both programs need to be run parallely in order to work as it should.
